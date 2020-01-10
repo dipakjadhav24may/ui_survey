@@ -33,7 +33,7 @@ class Auth {
     if (!this.authenticated) {
       this.clearLocalStorage();
     }
-    // this.authenticated = true;
+    this.authenticated = true;
 
     return this.authenticated;
   }

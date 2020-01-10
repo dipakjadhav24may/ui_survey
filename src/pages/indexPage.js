@@ -1,11 +1,8 @@
 import React from "react";
+import Layout from "../components/common/layout";
 
 const Dashboard = () => {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  );
+  return <Layout showHF={true}>Dipak dashboard</Layout>;
 };
 
 export default Dashboard;
