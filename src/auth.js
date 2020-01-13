@@ -5,13 +5,14 @@ class Auth {
     this.authenticated = false;
   }
 
-  login(cb, userType, Route) {
+  login(cb) {
     this.authenticated = true;
     setStorage("authenticated", this.authenticated);
-    setStorage("userType", userType);
-    const REACT_APP_BUILD_VERSION = process.env.REACT_APP_BUILD_VERSION;
-    localStorage.setItem("version", REACT_APP_BUILD_VERSION);
-    cb();
+    // const REACT_APP_BUILD_VERSION = process.env.REACT_APP_BUILD_VERSION;
+    // localStorage.setItem("version", REACT_APP_BUILD_VERSION);
+    if (cb) {
+      cb();
+    }
   }
 
   logout(cb) {
@@ -33,8 +34,6 @@ class Auth {
     if (!this.authenticated) {
       this.clearLocalStorage();
     }
-    this.authenticated = true;
-
     return this.authenticated;
   }
 

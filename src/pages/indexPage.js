@@ -1,8 +1,18 @@
 import React from "react";
 import Layout from "../components/common/layout";
+import { connect } from "react-redux";
 
-const Dashboard = () => {
-  return <Layout showHF={true}>Dipak dashboard</Layout>;
+const Dashboard = ({ loggedInUser, userToken }) => {
+  console.log("TCL: Dashboard -> userToken", userToken);
+  console.log("TCL: Dashboard -> loggedInUser", loggedInUser);
+  return (
+    <Layout showHF={true}>{loggedInUser ? loggedInUser.email : ""}</Layout>
+  );
 };
 
-export default Dashboard;
+const mapStateToProps = ({ appReducer }) => ({
+  loggedInUser: appReducer.loggedInUser,
+  userToken: appReducer.userToken
+});
+
+export default connect(mapStateToProps, {})(Dashboard);

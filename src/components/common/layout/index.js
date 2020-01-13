@@ -4,9 +4,11 @@ import Footer from "../footer";
 
 const Layout = ({ showHF, children }) => {
   return (
-    <div>
-      {showHF ? <Header /> : null}
-      {children}
+    <div className="layoutContainer">
+      <div className="layoutBody">
+        {showHF ? <Header /> : null}
+        {children}
+      </div>
       {showHF ? <Footer /> : null}
     </div>
   );
