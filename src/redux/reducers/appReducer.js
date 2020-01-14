@@ -1,16 +1,14 @@
 import {
   LOGOUT_ACTION,
   LOGIN_RESPONSE_SUCCESS,
-  SIGNUP,
-  CHNAGE_SUCCESSFUL_CREATION,
   LOGIN_RESPONSE_FAILURE
 } from "../actions/types";
 
 const initialState = {
   isLoggedIn: false,
   loggedInUser: null,
-  userCreationSuccessful: false,
-  response: null
+  response: null,
+  userToken: null
 };
 
 export default function appReducer(state = initialState, action) {
@@ -26,9 +24,9 @@ export default function appReducer(state = initialState, action) {
     case LOGIN_RESPONSE_SUCCESS: {
       return {
         ...state,
-        isLoggedIn: action.payload.isLoggedIn,
-        userToken: action.payload,
-        userCreationSuccessful: false,
+        isLoggedIn: true,
+        userToken: action.payload.token,
+        loggedInUser: action.payload.userData,
         response: null
       };
     }
@@ -36,18 +34,6 @@ export default function appReducer(state = initialState, action) {
       return {
         ...state,
         response: action.payload
-      };
-    }
-    case SIGNUP: {
-      return {
-        ...state,
-        userCreationSuccessful: action.payload
-      };
-    }
-    case CHNAGE_SUCCESSFUL_CREATION: {
-      return {
-        ...state,
-        userCreationSuccessful: false
       };
     }
     default:

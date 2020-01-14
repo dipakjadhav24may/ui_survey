@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 // import Layout from "../components/common/layout";
-import {
-  loginAction,
-  changeSuccessfulCreation
-} from "../redux/actions/appActions";
+import { loginAction } from "../redux/actions/appActions";
 // import { SignUpLink } from "./SignUp";
 import { Link } from "react-router-dom";
 // import * as ROUTES from "./routes";
@@ -105,15 +102,7 @@ class SignInPage extends Component {
         </button>
 
         <p className="mt-5">
-          Don't have an account?{" "}
-          <Link
-            to={"/signup"}
-            onClick={() => {
-              this.props.changeSuccessfulCreation();
-            }}
-          >
-            Sign Up
-          </Link>
+          Don't have an account? <Link to={"/signup"}>Sign Up</Link>
         </p>
       </div>
     );
@@ -128,8 +117,7 @@ const mapStateToProps = ({ appReducer }) => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      loginAction,
-      changeSuccessfulCreation
+      loginAction
     },
     dispatch
   );

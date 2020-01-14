@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import * as ROUTES from "../utils/routes";
 import { isEmail, isEmpty } from "../utils/helpermethods";
-import { signupAction } from "../redux/actions/appActions";
+import axios from "axios";
+import { BASE_URL } from "../utils/config";
 
 const INITIAL_STATE = {
   userName: "",
@@ -43,20 +44,27 @@ class SignUpPage extends Component {
       password,
       userName
     };
-    this.props.signupAction(userData);
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    axios
+      .post(BASE_URL + "token/signup", userData, config)
+      .then(response => {
+        if (response.status === 200) {
+          let username = this.state.userName;
+          this.setState({ ...INITIAL_STATE });
+          this.props.history.push(ROUTES.LANDING, {
+            username
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextState) {
-    if (
-      nextProps.userCreationSuccessful !== this.props.userCreationSuccessful &&
-      nextProps.userCreationSuccessful
-    ) {
-      this.setState({ ...INITIAL_STATE });
-      this.props.history.push(ROUTES.LANDING, {
-        username: this.state.userName
-      });
-    }
-  }
   onChange = event => {
     const errors = {};
 
@@ -251,8 +259,6 @@ class SignUpPage extends Component {
   }
 }
 
-const mapStateToProps = ({ appReducer }) => ({
-  userCreationSuccessful: appReducer.userCreationSuccessful
-});
+const mapStateToProps = ({ appReducer }) => ({});
 
-export default connect(mapStateToProps, { signupAction })(SignUpPage);
+export default connect(mapStateToProps, {})(SignUpPage);

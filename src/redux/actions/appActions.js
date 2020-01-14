@@ -1,9 +1,7 @@
 import {
   LOGOUT_ACTION,
   LOGIN_RESPONSE_SUCCESS,
-  LOGIN_RESPONSE_FAILURE,
-  SIGNUP,
-  CHNAGE_SUCCESSFUL_CREATION
+  LOGIN_RESPONSE_FAILURE
 } from "./types";
 import axios from "axios";
 
@@ -22,17 +20,34 @@ export const loginAction = data => {
 
     axios
       .post(BASE_URL + "token/generate-token", data, config)
-      .then(function(response) {
-        console.log("TCL: response", response.data.token);
-        dispatch({
-          type: LOGIN_RESPONSE_SUCCESS,
-          payload: response.data.token
-        });
+      .then(response => {
+        return response.data.token;
       })
-      .catch(function(error) {
+      .then(userToken => {
+        const configUser = {
+          headers: {
+            Authorization: `bearer ${userToken}`
+          }
+        };
+        axios
+          .get(BASE_URL + "organization/users/" + 3, configUser)
+          .then(response => {
+            console.log("TCL: response", response);
+            dispatch({
+              type: LOGIN_RESPONSE_SUCCESS,
+              payload: {
+                userData: response.data,
+                token: userToken
+              }
+            });
+          })
+          .catch(error => {
+            console.log(error.response.data);
+          });
+      })
+      .catch(error => {
         console.log(error.response.data);
         if (error.response.status === 401) {
-          console.log(error.response.status);
           dispatch({
             type: LOGIN_RESPONSE_FAILURE,
             payload: {
@@ -44,42 +59,11 @@ export const loginAction = data => {
       });
   };
 };
-export const signupAction = data => {
-  console.log("TCL: data", data);
-  return async dispatch => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-    axios
-      .post(BASE_URL + "token/signup", data, config)
-      .then(function(response) {
-        console.log("TCL: response", response);
-        dispatch({
-          type: SIGNUP,
-          payload: true
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
-  };
-};
 
 export const logoutAction = () => {
   return async dispatch => {
     dispatch({
       type: LOGOUT_ACTION,
-      payload: "clear redux data"
-    });
-  };
-};
-
-export const changeSuccessfulCreation = () => {
-  return async dispatch => {
-    dispatch({
-      type: CHNAGE_SUCCESSFUL_CREATION,
       payload: "clear redux data"
     });
   };
