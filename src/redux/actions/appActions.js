@@ -1,7 +1,9 @@
 import {
   LOGOUT_ACTION,
   LOGIN_RESPONSE_SUCCESS,
-  LOGIN_RESPONSE_FAILURE
+  LOGIN_RESPONSE_FAILURE,
+  CREATE_ORGANISATION,
+  GET_ORGANISATION_LIST
 } from "./types";
 import axios from "axios";
 
@@ -21,29 +23,11 @@ export const loginAction = data => {
     axios
       .post(BASE_URL + "token/generate-token", data, config)
       .then(response => {
-        return response.data.token;
-      })
-      .then(userToken => {
-        const configUser = {
-          headers: {
-            Authorization: `bearer ${userToken}`
-          }
-        };
-        axios
-          .get(BASE_URL + "organization/users/" + 3, configUser)
-          .then(response => {
-            console.log("TCL: response", response);
-            dispatch({
-              type: LOGIN_RESPONSE_SUCCESS,
-              payload: {
-                userData: response.data,
-                token: userToken
-              }
-            });
-          })
-          .catch(error => {
-            console.log(error.response.data);
-          });
+        console.log("TCL: response", response.data);
+        dispatch({
+          type: LOGIN_RESPONSE_SUCCESS,
+          payload: response.data
+        });
       })
       .catch(error => {
         console.log(error.response.data);
@@ -56,6 +40,55 @@ export const loginAction = data => {
             }
           });
         }
+      });
+  };
+};
+export const createOrgAction = (data, userToken) => {
+  return async dispatch => {
+    //Code for Api call here
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${userToken}`
+      }
+    };
+
+    axios
+      .post(BASE_URL + "organization/org", data, config)
+      .then(response => {
+        console.log("TCL: response", response.data);
+        dispatch({
+          type: CREATE_ORGANISATION,
+          payload: response.data
+        });
+      })
+      .catch(error => {
+        console.log(error.response);
+      });
+  };
+};
+export const getOrgListAction = userToken => {
+  return async dispatch => {
+    //Code for Api call here
+
+    const config = {
+      headers: {
+        Authorization: `bearer ${userToken}`
+      }
+    };
+
+    axios
+      .get(BASE_URL + "organization/orglist", config)
+      .then(response => {
+        console.log("TCL: response", response.data);
+        dispatch({
+          type: GET_ORGANISATION_LIST,
+          payload: response.data
+        });
+      })
+      .catch(error => {
+        console.log(error.response);
       });
   };
 };

@@ -6,8 +6,6 @@ import Auth from "../../../auth";
 import { logoutAction } from "../../../redux/actions/appActions";
 
 export class Header extends Component {
-  componentWillMount() {}
-
   signOutHandler = () => {
     Auth.logout(() => {
       this.props.logoutAction();
@@ -17,18 +15,20 @@ export class Header extends Component {
 
   render() {
     return (
-      <nav
-        className="navbar navbar-expand-lg bg-dark navbar-dark"
-        style={{ marginBottom: "30px" }}
-      >
-        <ul className="navbar-nav" style={{ width: "100%" }}>
+      <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
+        <ul className="navbar-nav">
           <li className="nav-item active">
             <Link className="nav-link" to={ROUTES.DASHBOARD}>
               Ui Survey
             </Link>
           </li>
+          <li className="nav-item active">
+            <Link className="nav-link" to={ROUTES.ORGANISATIONS}>
+              Organisation
+            </Link>
+          </li>
         </ul>
-        <ul className="navbar-nav" style={{ width: "100px" }}>
+        <ul className="navbar-nav ml-auto">
           <li
             className="nav-item navbar-right text-white"
             onClick={this.signOutHandler}

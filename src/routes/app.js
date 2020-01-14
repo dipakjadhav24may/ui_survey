@@ -3,6 +3,8 @@ import { Route, Switch } from "react-router-dom";
 
 import Dashboard from "../pages/indexPage";
 import NotFound from "../pages/notFound";
+import Organisation from "../pages/organisation";
+import SingleOrganisation from "../pages/singleOrganisation";
 
 const App = ({ match, history }) => {
   return (
@@ -12,7 +14,14 @@ const App = ({ match, history }) => {
           path={`${match.url}/dashboard`}
           render={props => <Dashboard {...props} />}
         />
-
+        <Route
+          path={`${match.url}/organisations/:id`}
+          render={props => <SingleOrganisation {...props} />}
+        />
+        <Route
+          path={`${match.url}/organisations`}
+          render={props => <Organisation {...props} />}
+        />
         <Route component={NotFound} />
       </Switch>
     </div>
