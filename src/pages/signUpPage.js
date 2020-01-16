@@ -44,13 +44,8 @@ class SignUpPage extends Component {
       password,
       userName
     };
-    const config = {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
     axios
-      .post(BASE_URL + "token/signup", userData, config)
+      .post(BASE_URL + "token/signup", userData)
       .then(response => {
         if (response.status === 200) {
           let username = this.state.userName;
@@ -67,7 +62,6 @@ class SignUpPage extends Component {
 
   onChange = event => {
     const errors = {};
-
     if (isEmpty(event.target.value)) {
       errors[event.target.name] = "field must not be empty";
     }
@@ -79,6 +73,7 @@ class SignUpPage extends Component {
         errors[event.target.name] = "Email field must not be empty";
       }
     }
+
     if (
       event.target.name === "confirmPassword" &&
       event.target.value.length >= this.state.password.length &&

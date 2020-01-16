@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { isEmpty } from "../../utils/helpermethods";
-import { createOrgAction } from "../../redux/actions/appActions";
+import { createOrgAction } from "../../redux/actions/dataActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -15,46 +15,35 @@ const INITIAL_STATE = {
 class OrganisationForm extends Component {
   state = { ...INITIAL_STATE };
 
-  onSubmitHandler = event => {
-    event.preventDefault();
-    const { city, country, orgName, state } = this.state;
-    const { userToken } = this.state;
-
-    let userData = {
-      city,
-      country,
-      orgName,
-      state
-    };
-    this.props.createOrgAction(userData, userToken);
-  };
-  componentWillMount() {
-    console.log(
-      "TCL: OrganisationForm -> componentWillMount -> componentWillMount"
-    );
-  }
-  componentWillUpdate() {
-    console.log(
-      "TCL: OrganisationForm -> componentWillUpdate -> componentWillUpdate"
-    );
-  }
-  componentDidMount() {
-    console.log(
-      "TCL: OrganisationForm -> componentDidMount -> componentDidMount"
-    );
-  }
-  componentDidUpdate() {
-    console.log(
-      "TCL: OrganisationForm -> componentDidUpdate -> componentDidUpdate"
-    );
-  }
-  componentWillReceiveProps(nextProps, nextState) {
-    if (nextProps.organisations.length > this.props.organisations.length) {
+  UNSAFE_componentWillReceiveProps(nextProps, nextState) {
+    if (
+      nextProps.data.organisations.length > this.props.data.organisations.length
+    ) {
       this.setState({
         ...INITIAL_STATE
       });
     }
   }
+
+  onSubmitHandler = event => {
+    event.preventDefault();
+    const { city, country, orgName, state } = this.state;
+    const {
+      user: {
+        user: { userId },
+        token
+      }
+    } = this.props;
+
+    let userData = {
+      city,
+      country,
+      orgName,
+      state,
+      createdBy: userId
+    };
+    this.props.createOrgAction(userData, token);
+  };
 
   onChange = event => {
     const errors = { ...this.state.errors };
@@ -68,15 +57,25 @@ class OrganisationForm extends Component {
   };
 
   render() {
-    console.log("TCL: OrganisationForm -> render -> render");
-
     const { city, country, orgName, state, errors } = this.state;
-
     const isInvalid =
       isEmpty(city) || isEmpty(country) || isEmpty(orgName) || isEmpty(state);
     return (
       <div>
         <h2 className="text-center mb-4">Create Organization</h2>
+        <div className="form-group">
+          <label>Company:</label>
+          <input
+            className={`form-control ${
+              errors && errors.orgName ? "is-invalid" : ""
+            }`}
+            name="orgName"
+            value={orgName}
+            onChange={this.onChange}
+            type="text"
+          />
+          <div className="invalid-feedback">{errors && errors.orgName}</div>
+        </div>
         <div className="form-group">
           <label>City:</label>
           <input
@@ -94,35 +93,6 @@ class OrganisationForm extends Component {
         </div>
 
         <div className="form-group">
-          <label>Country:</label>
-          <input
-            className={`form-control ${
-              errors && errors.country ? "is-invalid" : ""
-            }`}
-            name="country"
-            value={country}
-            onChange={this.onChange}
-            type="text"
-          />
-          <div className="invalid-feedback">
-            {errors && "Country" + errors.country}
-          </div>
-        </div>
-        <div className="form-group">
-          <label>Company:</label>
-          <input
-            className={`form-control ${
-              errors && errors.orgName ? "is-invalid" : ""
-            }`}
-            name="orgName"
-            value={orgName}
-            onChange={this.onChange}
-            type="text"
-          />
-          <div className="invalid-feedback">{errors && errors.orgName}</div>
-        </div>
-
-        <div className="form-group">
           <label>State:</label>
           <input
             className={`form-control ${
@@ -135,6 +105,21 @@ class OrganisationForm extends Component {
           />
           <div className="invalid-feedback">
             {errors && "State " + errors.state}
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Country:</label>
+          <input
+            className={`form-control ${
+              errors && errors.country ? "is-invalid" : ""
+            }`}
+            name="country"
+            value={country}
+            onChange={this.onChange}
+            type="text"
+          />
+          <div className="invalid-feedback">
+            {errors && "Country" + errors.country}
           </div>
         </div>
         <button
@@ -150,17 +135,13 @@ class OrganisationForm extends Component {
   }
 }
 
-const mapStateToProps = ({ appReducer }) => ({
-  userToken: appReducer.userToken,
-  organisations: appReducer.organisations
+const mapStateToProps = state => ({
+  user: state.user,
+  ui: state.ui,
+  data: state.data
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      createOrgAction
-    },
-    dispatch
-  );
+  bindActionCreators({ createOrgAction }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrganisationForm);

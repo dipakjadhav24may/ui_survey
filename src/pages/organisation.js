@@ -1,38 +1,43 @@
 import React, { Component } from "react";
-// import { Link } from "react-router-dom";
-import { getOrgListAction } from "../redux/actions/appActions";
+import { getOrgListAction } from "../redux/actions/dataActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-// import * as ROUTES from "../utils/routes";
-
 import Layout from "../components/common/layout";
 import OrganisationForm from "../components/oragnisation/organisationForm";
 import OrganistionItem from "../components/oragnisation/organistionItem";
 
 class Organisation extends Component {
   state = {
-    organisations: [],
-    loading: false
+    organisations: []
   };
 
   componentDidMount() {
-    this.props.getOrgListAction(this.props.userToken);
+    const {
+      user: {
+        user: { userId },
+        token
+      }
+    } = this.props;
+    this.props.getOrgListAction(userId, token);
   }
 
   UNSAFE_componentWillReceiveProps(nextProps, nextState) {
-    if (nextProps !== this.props) {
-      this.setState({ organisations: nextProps.organisations });
+    if (nextProps.data !== this.props.data) {
+      this.setState({ organisations: nextProps.data.organisations });
     }
   }
 
   render() {
     const { organisations } = this.state;
+    const {
+      ui: { loading }
+    } = this.props;
 
     return (
       <Layout showHF={true}>
         <div className="container mt-5 px-0">
           <div className="row">
-            <div className="col-sm-8">
+            <div className="col-sm-8 mb-5">
               <h2 className="text-center mb-4">Yours Organization</h2>
               <ul className="list-group c-organistionList">
                 {organisations.map(organisation => {
@@ -58,17 +63,13 @@ class Organisation extends Component {
   }
 }
 
-const mapStateToProps = ({ appReducer }) => ({
-  userToken: appReducer.userToken,
-  organisations: appReducer.organisations
+const mapStateToProps = state => ({
+  user: state.user,
+  ui: state.ui,
+  data: state.data
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      getOrgListAction
-    },
-    dispatch
-  );
+  bindActionCreators({ getOrgListAction }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Organisation);

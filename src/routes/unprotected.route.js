@@ -1,32 +1,25 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import Auth from "../auth";
+import { connect } from "react-redux";
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
+const UnProtectedRoute = ({ component: Component, authenticated, ...rest }) => {
+  console.log("TCL: ProtectedRoute -> authenticated", authenticated);
   return (
     <Route
       {...rest}
-      render={props => {
-        if (!Auth.isAuthenticated()) {
-          return <Component {...props} />;
-        } else {
-          let returnRoute = "/app/dashboard";
-          //   returnRoute = Auth.getNavRoute();
-
-          return (
-            <Redirect
-              to={{
-                pathname: returnRoute,
-                state: {
-                  from: props.location
-                }
-              }}
-            />
-          );
-        }
-      }}
+      render={props =>
+        !authenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/app/dashboard" />
+        )
+      }
     />
   );
 };
 
-export default ProtectedRoute;
+const mapStateToProps = state => ({
+  authenticated: state.user.authenticated
+});
+
+export default connect(mapStateToProps)(UnProtectedRoute);

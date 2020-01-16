@@ -1,14 +1,9 @@
 import React, { Component } from "react";
-// import Layout from "../components/common/layout";
-import { loginAction } from "../redux/actions/appActions";
-// import { SignUpLink } from "./SignUp";
+import { loginUserAction } from "../redux/actions/userActions";
 import { Link } from "react-router-dom";
-// import * as ROUTES from "./routes";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import Auth from "../auth";
 import * as CONSTANTS from "../utils/constants";
-import * as ROUTES from "../utils/routes";
 
 const INITIAL_STATE = {
   username: CONSTANTS.username,
@@ -19,7 +14,6 @@ const INITIAL_STATE = {
 class SignInPage extends Component {
   constructor(props) {
     super(props);
-
     this.state = { ...INITIAL_STATE };
   }
 
@@ -37,35 +31,31 @@ class SignInPage extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps, nextState) {
-    if (nextProps.isLoggedIn !== this.props.isLoggedIn) {
-      Auth.login(() => {
-        this.props.history.push(ROUTES.DASHBOARD);
-      });
-    }
-
-    if (nextProps.response && nextProps.response.status === 401) {
-      this.setState({
-        error: { message: nextProps.response.message }
-      });
-    }
+    // if (nextProps.ui.errors !== this.props.ui.errors) {
+    //   this.setState({
+    //     errors: nextProps.ui.errors
+    //   });
+    // }
   }
 
   onSubmit = event => {
+    event.preventDefault();
     let data = { username: this.state.username, password: this.state.password };
-    this.props.loginAction(data);
-    this.setState({ ...INITIAL_STATE });
+    this.props.loginUserAction(data, this.props.history);
   };
 
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  gotosignup() {
-    this.props.history.push(ROUTES.SIGNUP);
-  }
-
   render() {
-    const { username, password, error } = this.state;
+    const {
+      ui: { loading }
+    } = this.props;
+    console.log("TCL: SignInPage -> render -> loading", loading);
+
+    const { username, password, errors } = this.state;
+    console.log("TCL: SignInPage -> render -> errors", errors);
 
     const isInvalid = password === "" || username === "";
     return (
@@ -91,7 +81,7 @@ class SignInPage extends Component {
             placeholder="Password"
           />
         </div>
-        {error && <p className="text-danger">{error.message}</p>}
+        {/* {error && <p className="text-danger">{error.message}</p>} */}
         <button
           disabled={isInvalid}
           className="btn btn-success mt-3"
@@ -109,15 +99,15 @@ class SignInPage extends Component {
   }
 }
 
-const mapStateToProps = ({ appReducer }) => ({
-  isLoggedIn: appReducer.isLoggedIn,
-  response: appReducer.response
+const mapStateToProps = state => ({
+  user: state.user,
+  ui: state.ui
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      loginAction
+      loginUserAction
     },
     dispatch
   );

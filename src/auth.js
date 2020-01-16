@@ -1,36 +1,27 @@
-import { setStorage, getStorage } from "./utils/helpermethods";
+import jwtDecode from "jwt-decode";
 
 class Auth {
   constructor() {
     this.authenticated = false;
   }
 
-  login(cb) {
-    this.authenticated = true;
-    setStorage("authenticated", this.authenticated);
-    // const REACT_APP_BUILD_VERSION = process.env.REACT_APP_BUILD_VERSION;
-    // localStorage.setItem("version", REACT_APP_BUILD_VERSION);
-    if (cb) {
-      cb();
-    }
-  }
-
-  logout(cb) {
-    this.authenticated = false;
-    this.clearLocalStorage();
-    cb();
-  }
-
   clearLocalStorage() {
-    localStorage.removeItem("authenticated");
-    localStorage.removeItem("authenticated_expiresIn");
+    localStorage.removeItem("UserToken");
   }
 
   isAuthenticated() {
-    this.authenticated =
-      getStorage("authenticated") !== null
-        ? getStorage("authenticated")
-        : false;
+    const token = localStorage.UserToken;
+
+    if (token) {
+      let decodedToken = jwtDecode(token);
+      if (decodedToken.exp * 1000 < Date.now()) {
+        this.authenticated = false;
+      } else {
+        this.authenticated = true;
+      }
+    } else {
+      this.authenticated = false;
+    }
     if (!this.authenticated) {
       this.clearLocalStorage();
     }
