@@ -6,7 +6,10 @@ import {
   CREATE_ORGANISATION,
   GET_GROUPS,
   GET_ORGANISATION,
-  CREATE_GROUP
+  CREATE_GROUP,
+  SAVE_SURVEY,
+  GET_ALL_SURVEYS,
+  RESET_SURVEY
 } from "../types";
 import axios from "axios";
 import { BASE_URL } from "../../utils/config";
@@ -103,7 +106,10 @@ export const createGroupAction = (data, userToken) => dispatch => {
     });
 };
 
-export const getOrgGroupsAction = orgId => dispatch => {
+export const getOrgGroupsAction = (orgId, token) => dispatch => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = token;
+  }
   dispatch({ type: LOADING_UI });
   axios
     .get(`${BASE_URL}organization/orggrp/${orgId}`)
@@ -124,4 +130,58 @@ export const getOrgGroupsAction = orgId => dispatch => {
         payload: error.response ? error.response.data : null
       });
     });
+};
+
+export const createSurveyAction = (data, token, history) => dispatch => {
+  axios.defaults.headers.common["Authorization"] = token;
+  dispatch({ type: LOADING_UI });
+
+  axios
+    .post(`${BASE_URL}organization/survey`, data)
+    .then(response => {
+      console.log("TCL: response", response);
+      dispatch({
+        type: CLEAR_ERRORS
+      });
+      history.push("/app/dashboard");
+    })
+    .catch(error => {
+      console.log("TCL: error", error.response);
+      dispatch({
+        type: SET_ERRORS,
+        payload: error.response ? error.response.data : null
+      });
+    });
+};
+
+export const getSurveysAction = token => dispatch => {
+  axios.defaults.headers.common["Authorization"] = token;
+  dispatch({ type: LOADING_UI });
+
+  axios
+    .get(`${BASE_URL}organization/surveylist`)
+    .then(response => {
+      dispatch({
+        type: CLEAR_ERRORS
+      });
+      dispatch({
+        type: GET_ALL_SURVEYS,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      console.log("TCL: error", error.response);
+      dispatch({
+        type: SET_ERRORS,
+        payload: error.response ? error.response.data : null
+      });
+    });
+};
+
+export const saveSurveyDataToStoreAction = surveyData => dispatch => {
+  dispatch({ type: SAVE_SURVEY, payload: surveyData });
+};
+
+export const resetSurveyDataToStoreAction = () => dispatch => {
+  dispatch({ type: RESET_SURVEY });
 };

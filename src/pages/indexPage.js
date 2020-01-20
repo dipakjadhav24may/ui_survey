@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/common/layout";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { getSurveysAction } from "../redux/actions/dataActions";
 import { Link } from "react-router-dom";
 import * as ROUTES from "../utils/routes";
 import SurveyTable from "../components/dashboard/projectTable";
 
-const Dashboard = ({ user: { user, token } }) => {
+const Dashboard = ({
+  user: { user, token },
+  data: { surveys },
+  getSurveysAction
+}) => {
+  console.log("TCL: Dashboard -> surveys", surveys);
+  useEffect(() => {
+    getSurveysAction(token);
+  }, [getSurveysAction, token]);
+
   return (
     <Layout showHF={true}>
       <div className="container-fluid">
@@ -23,6 +33,9 @@ const Dashboard = ({ user: { user, token } }) => {
           <div className="col-sm-12 col-xs-12">
             <SurveyTable surveys={[]} />
           </div>
+          <div className="col-sm-12">
+            <SurveyTable surveys={surveys} />
+          </div>
         </div>
       </div>
     </Layout>
@@ -31,9 +44,11 @@ const Dashboard = ({ user: { user, token } }) => {
 
 const mapStateToProps = state => ({
   user: state.user,
-  ui: state.ui
+  ui: state.ui,
+  data: state.data
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ getSurveysAction }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
