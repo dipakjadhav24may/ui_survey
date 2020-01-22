@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import SurveyCreator from "../components/createNewProject/SurveyCreator";
+import SurveyCreator from "../components/surveyeditor/SurveyCreator";
 import Layout from "../components/common/layout";
-export class CreateNewProject extends Component {
+export class EditProject extends Component {
   render() {
     return (
       <Layout showHF={true}>
@@ -11,4 +11,4 @@ export class CreateNewProject extends Component {
   }
 }
 
-export default CreateNewProject;
+export default EditProject;

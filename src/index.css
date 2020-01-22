@@ -41,6 +41,7 @@ body {
 
 .btn.btn-primary {
   background-color: #343a40 !important;
+  border: none;
 }
 
 .svd_container.svd_container .svd_custom_select::before {

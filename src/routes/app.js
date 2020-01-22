@@ -6,7 +6,8 @@ import Organisation from "../pages/organisation";
 import SingleOrganisation from "../pages/singleOrganisation";
 import Profile from "../pages/profilePage";
 import NotFound from "../pages/notFound";
-import CreateNewProject from "../pages/createNewProject";
+import CreateNewProject from "../pages/surveybuilder";
+import EditProject from "../pages/surveyeditor";
 
 const App = ({ match, history }) => {
   return (
@@ -19,6 +20,10 @@ const App = ({ match, history }) => {
         <Route
           path={`${match.url}/createnewproject`}
           render={props => <CreateNewProject {...props} />}
+        />
+        <Route
+          path={`${match.url}/editproject/:surveyId`}
+          render={props => <EditProject {...props} />}
         />
         <Route
           path={`${match.url}/organisations/:id`}

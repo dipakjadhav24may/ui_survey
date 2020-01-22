@@ -22,3 +22,18 @@ export const createSurvey = async surveyData => {
     .getKey();
   return key;
 };
+
+export const getSurvey = async surveyId => {
+  const surveyData = await database
+    .ref("surveys")
+    .child(surveyId)
+    .once("value");
+  return surveyData;
+};
+
+export const updateSurvey = async (surveyId, data) => {
+  await database
+    .ref("surveys")
+    .child(surveyId)
+    .update(data);
+};

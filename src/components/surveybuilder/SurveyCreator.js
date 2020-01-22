@@ -4,7 +4,8 @@ import {
   getSingleOrgAction,
   getOrgGroupsAction,
   saveSurveyDataToStoreAction,
-  createSurveyAction
+  createSurveyAction,
+  getSingleSurveyAction
 } from "../../redux/actions/dataActions";
 import { withRouter } from "react-router-dom";
 import { createSurvey } from "../../firebase";
@@ -100,13 +101,21 @@ class SurveyCreator extends Component {
         selectedGroup,
         surveyName
       });
+
       this.surveyCreator.text = surveyText;
+    }
+    if (selectedOrganisation && Object.values(selectedOrganisation).length) {
+      this.handleOrgChange(selectedOrganisation);
+    }
+
+    if (selectedGroup && Object.values(selectedGroup).length) {
+      this.handleGroupChange(selectedGroup);
     }
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.props.getOrgListAction(userId, token);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextState) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState({
         organisations: nextProps.data.organisations,
@@ -116,11 +125,14 @@ class SurveyCreator extends Component {
   }
 
   handleOrgChange = organisation => {
-    this.setState({ selectedOrganisation: organisation }, () => {
-      this.props.saveSurveyDataToStoreAction({
-        selectedOrganisation: organisation
-      });
-    });
+    this.setState(
+      { selectedOrganisation: organisation, selectedGroup: {}, groups: [] },
+      () => {
+        this.props.saveSurveyDataToStoreAction({
+          selectedOrganisation: organisation
+        });
+      }
+    );
     const {
       user: { token }
     } = this.props;
@@ -152,11 +164,12 @@ class SurveyCreator extends Component {
   saveSurveyToDB = event => {
     const { surveyName, selectedOrganisation, selectedGroup } = this.state;
     const {
-      user: { token },
+      user: {
+        user: { userId },
+        token
+      },
       history
     } = this.props;
-
-    this.props.saveSurveyDataToStoreAction({});
 
     let surveyData = JSON.parse(this.surveyCreator.text);
     surveyData.title = surveyName;
@@ -169,7 +182,8 @@ class SurveyCreator extends Component {
         firebaseSurveyId: surveyId,
         groupId: selectedGroup.groupId,
         orgId: selectedOrganisation.orgId,
-        surveyName
+        surveyName,
+        createdByUser: userId
       };
       this.props.createSurveyAction(SurveyObj, token, history);
     });
@@ -292,7 +306,7 @@ class SurveyCreator extends Component {
             <div className="btn-group ml-4 float-right">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-primary"
                 disabled={isInvalid}
                 onClick={this.saveSurveyToDB}
               >
@@ -331,7 +345,8 @@ const mapDispatchToProps = dispatch =>
       getSingleOrgAction,
       getOrgGroupsAction,
       saveSurveyDataToStoreAction,
-      createSurveyAction
+      createSurveyAction,
+      getSingleSurveyAction
     },
     dispatch
   );

@@ -7,7 +7,9 @@ import {
   GET_GROUPS,
   SAVE_SURVEY,
   GET_ALL_SURVEYS,
-  RESET_SURVEY
+  RESET_SURVEY,
+  GET_SINSLE_SURVEY,
+  SET_ERRORS
 } from "../types";
 
 const initialState = {
@@ -17,11 +19,19 @@ const initialState = {
     users: []
   },
   surveys: [],
-  surveyData: {}
+  surveyData: {
+    selectedOrganisation: {},
+    selectedGroup: {},
+    surveyName: ""
+  },
+  editSurveyData: {
+    selectedOrganisation: {},
+    selectedGroup: {},
+    surveyName: ""
+  }
 };
 
 export default (state = initialState, action) => {
-  console.log("TCL: action", action);
   switch (action.type) {
     case SET_UNAUTHENTICATED:
       return initialState;
@@ -38,6 +48,7 @@ export default (state = initialState, action) => {
           ...action.payload
         }
       };
+
     case CREATE_ORGANISATION: {
       const newOrganisations = [...state.organisations, action.payload];
       return {
@@ -66,7 +77,8 @@ export default (state = initialState, action) => {
     case RESET_SURVEY:
       return {
         ...state,
-        surveyData: {}
+        surveyData: {},
+        editSurveyData: {}
       };
     case GET_ALL_SURVEYS:
       return {
@@ -79,6 +91,25 @@ export default (state = initialState, action) => {
         organisation: {
           ...state.organisation,
           groups: action.payload
+        }
+      };
+    }
+    case SET_ERRORS: {
+      return {
+        ...state,
+        organisation: {
+          ...state.organisation,
+          groups: []
+        }
+      };
+    }
+
+    case GET_SINSLE_SURVEY: {
+      return {
+        ...state,
+        editSurveyData: {
+          ...state.editSurveyData,
+          ...action.payload
         }
       };
     }

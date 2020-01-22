@@ -9,10 +9,14 @@ import {
   CREATE_GROUP,
   SAVE_SURVEY,
   GET_ALL_SURVEYS,
-  RESET_SURVEY
+  RESET_SURVEY,
+  GET_SINSLE_SURVEY,
+  GET_SINSLE_GROUP
 } from "../types";
 import axios from "axios";
 import { BASE_URL } from "../../utils/config";
+
+import { getSurvey } from "../../firebase";
 
 export const getOrgListAction = (userId, token) => dispatch => {
   axios.defaults.headers.common["Authorization"] = token;
@@ -114,7 +118,6 @@ export const getOrgGroupsAction = (orgId, token) => dispatch => {
   axios
     .get(`${BASE_URL}organization/orggrp/${orgId}`)
     .then(response => {
-      console.log("TCL: response", response);
       dispatch({
         type: CLEAR_ERRORS
       });
@@ -143,6 +146,7 @@ export const createSurveyAction = (data, token, history) => dispatch => {
       dispatch({
         type: CLEAR_ERRORS
       });
+      dispatch({ type: RESET_SURVEY });
       history.push("/app/dashboard");
     })
     .catch(error => {
@@ -154,18 +158,130 @@ export const createSurveyAction = (data, token, history) => dispatch => {
     });
 };
 
-export const getSurveysAction = token => dispatch => {
+export const updateSurveyAction = (
+  surveyId,
+  data,
+  token,
+  history
+) => dispatch => {
   axios.defaults.headers.common["Authorization"] = token;
   dispatch({ type: LOADING_UI });
 
   axios
-    .get(`${BASE_URL}organization/surveylist`)
+    .put(`${BASE_URL}organization/survey/${surveyId}`, data)
+    .then(response => {
+      dispatch({
+        type: CLEAR_ERRORS
+      });
+      dispatch({ type: RESET_SURVEY });
+      history.push("/app/dashboard");
+    })
+    .catch(error => {
+      console.log("TCL: error", error.response);
+      dispatch({
+        type: SET_ERRORS,
+        payload: error.response ? error.response.data : null
+      });
+    });
+};
+
+export const getSurveysAction = (userId, token) => dispatch => {
+  axios.defaults.headers.common["Authorization"] = token;
+  dispatch({ type: LOADING_UI });
+
+  axios
+    .get(`${BASE_URL}organization/survey/user/${userId}`)
     .then(response => {
       dispatch({
         type: CLEAR_ERRORS
       });
       dispatch({
         type: GET_ALL_SURVEYS,
+        payload: response.data
+      });
+      dispatch(getOrgListAction(userId, token));
+    })
+    .catch(error => {
+      console.log("TCL: error", error.response);
+      dispatch({
+        type: SET_ERRORS,
+        payload: error.response ? error.response.data : null
+      });
+    });
+};
+
+export const getSingleSurveyAction = (surveyId, token) => dispatch => {
+  axios.defaults.headers.common["Authorization"] = token;
+  dispatch({ type: LOADING_UI });
+
+  axios
+    .get(`${BASE_URL}organization/survey/${surveyId}`)
+    .then(response_survey => {
+      getSurvey(response_survey.data.firebaseSurveyId).then(snapshot => {
+        if (snapshot.exists) {
+          console.log("TCL: snapshot", snapshot.val());
+          axios
+            .get(
+              `${BASE_URL}organization/org/${snapshot.val().organisation_id}`
+            )
+            .then(response_org => {
+              let selectedOrganisation = response_org.data;
+              axios
+                .get(`${BASE_URL}organization/group/${snapshot.val().group_id}`)
+                .then(response_group => {
+                  let selectedGroup = response_group.data;
+                  let surveyData = {
+                    surveyName: snapshot.val().title,
+                    selectedOrganisation,
+                    selectedGroup,
+                    surveyId: surveyId,
+                    surveyText: snapshot.val()
+                  };
+                  dispatch({
+                    type: GET_SINSLE_SURVEY,
+                    payload: surveyData
+                  });
+                })
+                .catch(error => {
+                  console.log("TCL: error getGroup", error.response);
+                  dispatch({
+                    type: SET_ERRORS,
+                    payload: error.response ? error.response.data : null
+                  });
+                });
+            })
+            .catch(error => {
+              console.log("TCL: error getSurvey", error.response);
+              dispatch({
+                type: SET_ERRORS,
+                payload: error.response ? error.response.data : null
+              });
+            });
+        }
+      });
+    })
+    .catch(error => {
+      console.log("TCL: error", error.response);
+      dispatch({
+        type: SET_ERRORS,
+        payload: error.response ? error.response.data : null
+      });
+    });
+};
+
+export const getSingleGroupAction = (groupId, token) => dispatch => {
+  axios.defaults.headers.common["Authorization"] = token;
+  dispatch({ type: LOADING_UI });
+
+  axios
+    .get(`${BASE_URL}organization/group/${groupId}`)
+    .then(response => {
+      console.log("TCL: response", response.data);
+      dispatch({
+        type: CLEAR_ERRORS
+      });
+      dispatch({
+        type: GET_SINSLE_GROUP,
         payload: response.data
       });
     })
@@ -180,8 +296,4 @@ export const getSurveysAction = token => dispatch => {
 
 export const saveSurveyDataToStoreAction = surveyData => dispatch => {
   dispatch({ type: SAVE_SURVEY, payload: surveyData });
-};
-
-export const resetSurveyDataToStoreAction = () => dispatch => {
-  dispatch({ type: RESET_SURVEY });
 };

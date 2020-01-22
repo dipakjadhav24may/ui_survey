@@ -16,10 +16,10 @@ import { SET_UNAUTHENTICATED } from "../redux/types";
 const Routes = ({ token }) => {
   if (token) {
     let decodedToken = jwtDecode(token);
-    console.log(
-      "TCL: Routes -> token valid till",
-      new Date(decodedToken.exp * 1000)
-    );
+    // console.log(
+    //   "TCL: Routes -> token valid till",
+    //   new Date(decodedToken.exp * 1000)
+    // );
     if (decodedToken.exp * 1000 < Date.now()) {
       store.store.dispatch({ type: SET_UNAUTHENTICATED });
     }

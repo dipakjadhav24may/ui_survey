@@ -12,28 +12,24 @@ const Dashboard = ({
   data: { surveys },
   getSurveysAction
 }) => {
-  console.log("TCL: Dashboard -> surveys", surveys);
   useEffect(() => {
-    getSurveysAction(token);
-  }, [getSurveysAction, token]);
+    getSurveysAction(user.userId, token);
+  }, [getSurveysAction, user, token]);
 
   return (
     <Layout showHF={true}>
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           <div className="col-sm-9 col-xs-12"></div>
           <div className="col-sm-3 col-xs-12 ">
             <Link
-              className="btn btn-dark btn-lg float-right mt-4 mr-4"
+              className="btn btn-dark  float-right mt-4 "
               to={ROUTES.CREATENEWPROJECT}
             >
               Create new Project
             </Link>
           </div>
-          <div className="col-sm-12 col-xs-12">
-            <SurveyTable surveys={[]} />
-          </div>
-          <div className="col-sm-12">
+          <div className="col-sm-12 mt-5">
             <SurveyTable surveys={surveys} />
           </div>
         </div>
