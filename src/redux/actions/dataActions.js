@@ -132,6 +132,7 @@ export const getOrgGroupsAction = (orgId, token) => dispatch => {
       console.log("TCL: error", error.response);
       dispatch({
         type: SET_ERRORS,
+        data: { groups: [] },
         payload: error.response ? error.response.data : null
       });
     });
@@ -219,9 +220,11 @@ export const getSingleSurveyAction = (surveyId, token) => dispatch => {
   axios
     .get(`${BASE_URL}organization/survey/${surveyId}`)
     .then(response_survey => {
+      console.log(response_survey.data);
+
       getSurvey(response_survey.data.firebaseSurveyId).then(snapshot => {
         if (snapshot.exists) {
-          console.log("TCL: snapshot", snapshot.val());
+          console.log("TCL: snapshot", snapshot.key, snapshot.val());
           axios
             .get(
               `${BASE_URL}organization/org/${snapshot.val().organisation_id}`
@@ -236,9 +239,11 @@ export const getSingleSurveyAction = (surveyId, token) => dispatch => {
                     surveyName: snapshot.val().title,
                     selectedOrganisation,
                     selectedGroup,
-                    surveyId: surveyId,
+                    surveyId: response_survey.data.surveyId,
+                    surveyFirebaseId: snapshot.key,
                     surveyText: snapshot.val()
                   };
+                  console.log("TCL: surveyData", surveyData);
                   dispatch({
                     type: GET_SINSLE_SURVEY,
                     payload: surveyData
@@ -342,9 +347,9 @@ export const getOrgUserAction = (orgId, groupId, token) => dispatch => {
       });
     })
     .catch(error => {
-      console.log("TCL: error", error.response);
       dispatch({
         type: SET_ERRORS,
+        data: { users: [] },
         payload: error.response ? error.response.data : null
       });
     });

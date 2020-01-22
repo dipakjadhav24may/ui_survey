@@ -59,7 +59,8 @@ class SurveyCreator extends Component {
     groups: [],
     selectedOrganisation: {},
     selectedGroup: {},
-    surveyId: ""
+    surveyId: "",
+    surveyFirebaseId: ""
   };
   surveyCreator;
 
@@ -100,19 +101,22 @@ class SurveyCreator extends Component {
             selectedGroup,
             surveyText,
             surveyName,
-            surveyId
+            surveyId,
+            surveyFirebaseId
           }
         }
       } = nextProps;
       if (
         nextProps.data.editSurveyData !== this.props.data.editSurveyData &&
-        surveyId
+        surveyId &&
+        surveyFirebaseId
       ) {
         this.setState({
           selectedOrganisation,
           selectedGroup,
           surveyName,
-          surveyId
+          surveyId,
+          surveyFirebaseId
         });
         this.surveyCreator.text = JSON.stringify(surveyText);
         if (
@@ -160,9 +164,14 @@ class SurveyCreator extends Component {
       surveyName,
       selectedOrganisation,
       selectedGroup,
-      surveyId
+      surveyId,
+      surveyFirebaseId
     } = this.state;
-    console.log("TCL: SurveyCreator -> surveyId", surveyId);
+    console.log(
+      "TCL: SurveyCreator -> surveyFirebaseId",
+      surveyId,
+      surveyFirebaseId
+    );
     const {
       user: {
         user: { userId },
@@ -175,19 +184,17 @@ class SurveyCreator extends Component {
     surveyData.title = surveyName;
     surveyData.organisation_id = selectedOrganisation.orgId;
     surveyData.group_id = selectedGroup.groupId;
-    console.log("TCL: SurveyCreator -> surveyData", surveyData);
 
-    updateSurvey(surveyId, surveyData);
+    updateSurvey(surveyFirebaseId, surveyData);
 
     let SurveyObj = {
       active: true,
-      firebaseSurveyId: surveyId,
+      firebaseSurveyId: surveyFirebaseId,
       createdByUser: userId,
       groupId: selectedGroup.groupId,
       orgId: selectedOrganisation.orgId,
       surveyName
     };
-    console.log("TCL: SurveyCreator -> SurveyObj", SurveyObj);
     this.props.updateSurveyAction(surveyId, SurveyObj, token, history);
   };
 

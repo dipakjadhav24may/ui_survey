@@ -32,6 +32,7 @@ export const getSurvey = async surveyId => {
 };
 
 export const updateSurvey = async (surveyId, data) => {
+  console.log("TCL: updateSurvey -> surveyId", surveyId);
   await database
     .ref("surveys")
     .child(surveyId)

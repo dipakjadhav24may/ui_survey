@@ -9,6 +9,7 @@ import Profile from "../pages/profilePage";
 import NotFound from "../pages/notFound";
 import CreateNewProject from "../pages/surveybuilder";
 import EditProject from "../pages/surveyeditor";
+import Assessments from "../pages/assessments";
 
 const App = ({ match, history }) => {
   return (
@@ -42,6 +43,11 @@ const App = ({ match, history }) => {
           path={`${match.url}/users/:orgId/:groupId`}
           render={props => <User {...props} />}
         />
+        <Route
+          path={`${match.url}/assessments/:userId/:orgId/:groupId`}
+          render={props => <Assessments {...props} />}
+        />
+
         <Route component={NotFound} />
       </Switch>
     </div>

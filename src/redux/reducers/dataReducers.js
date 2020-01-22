@@ -17,8 +17,8 @@ import {
 const initialState = {
   organisations: [],
   organisation: {
-    groups: []
-    // users: []
+    groups: [],
+    users: []
   },
   surveys: [],
   surveyData: {
@@ -102,7 +102,7 @@ export default (state = initialState, action) => {
         ...state,
         organisation: {
           ...state.organisation,
-          groups: []
+          ...action.data
         }
       };
     }
