@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import Dashboard from "../pages/indexPage";
 import Organisation from "../pages/organisation";
+import User from "../pages/user";
 import SingleOrganisation from "../pages/singleOrganisation";
 import Profile from "../pages/profilePage";
 import NotFound from "../pages/notFound";
@@ -31,6 +32,10 @@ const App = ({ match, history }) => {
         <Route
           path={`${match.url}/profile`}
           render={props => <Profile {...props} />}
+        />
+        <Route
+          path={`${match.url}/users/:orgId/:groupId`}
+          render={props => <User {...props} />}
         />
         <Route component={NotFound} />
       </Switch>

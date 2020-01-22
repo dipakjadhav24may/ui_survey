@@ -7,7 +7,7 @@ import * as ROUTES from "../utils/routes";
 import Layout from "../components/common/layout";
 import CreateGroupForm from "../components/singleOrganisation/createGroupForm";
 import GroupTable from "../components/singleOrganisation/groupTable";
-import UserTable from "../components/singleOrganisation/usersTable";
+// import UserTable from "../components/singleOrganisation/usersTable";
 class OrganisationItem extends Component {
   state = {
     organisation: {},
@@ -55,18 +55,19 @@ class OrganisationItem extends Component {
                   <GroupTable
                     groups={organisation.groups}
                     orgName={organisation.orgName}
+                    orgId={organisation.orgId}
                   />
                 </div>
               </div>
-              <h4 className="mt-5">Users</h4>
-              <div className="row mb-5">
+              {/*<h4 className="mt-5">Users</h4>*/}
+              {/*<div className="row mb-5">
                 <div className="col-sm-12">
                   <UserTable
                     users={organisation.users}
                     orgName={organisation.orgName}
                   />
                 </div>
-              </div>
+              </div>*/}
             </div>
           </div>
         </div>

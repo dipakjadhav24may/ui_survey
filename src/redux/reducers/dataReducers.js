@@ -7,14 +7,16 @@ import {
   GET_GROUPS,
   SAVE_SURVEY,
   GET_ALL_SURVEYS,
-  RESET_SURVEY
+  RESET_SURVEY,
+  CREATE_ORG_USER,
+  GET_ORG_USERS
 } from "../types";
 
 const initialState = {
   organisations: [],
   organisation: {
     groups: [],
-    users: []
+    // users: []
   },
   surveys: [],
   surveyData: {}
@@ -79,6 +81,25 @@ export default (state = initialState, action) => {
         organisation: {
           ...state.organisation,
           groups: action.payload
+        }
+      };
+    }
+    case CREATE_ORG_USER: {
+      const newUser = [...state.organisation.users, action.payload];
+      return {
+        ...state,
+        organisation: {
+          ...state.organisation,
+          users: newUser
+        }
+      };
+    }
+    case GET_ORG_USERS: {
+      return {
+        ...state,
+        organisation: {
+          ...state.organisation,
+          users: action.payload
         }
       };
     }

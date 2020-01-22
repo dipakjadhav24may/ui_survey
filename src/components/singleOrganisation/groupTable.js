@@ -1,6 +1,12 @@
 import React from "react";
+import * as ROUTE from "../../utils/routes";
+import {withRouter} from 'react-router-dom';
 
-const GroupTable = ({ groups, orgName }) => {
+const GroupTable = ({ groups, orgName,orgId,history }) => {
+   const onClickHandler = group => {
+    const singlePageRoute = ROUTE.USERS + "/" + orgId+"/"+group.groupId;
+    history.push(singlePageRoute);
+  };
   return (
     <table className="table table-striped border-bottom border-right border-left">
       <thead>
@@ -14,7 +20,7 @@ const GroupTable = ({ groups, orgName }) => {
         {groups &&
           groups.map((group, index) => {
             return (
-              <tr key={group.groupId}>
+              <tr key={group.groupId} onClick={()=>onClickHandler(group)}>
                 <th scope="row">{index + 1}</th>
                 <td>{group.groupName}</td>
                 <td>{orgName && orgName}</td>
@@ -26,4 +32,4 @@ const GroupTable = ({ groups, orgName }) => {
   );
 };
 
-export default GroupTable;
+export default withRouter(GroupTable);

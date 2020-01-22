@@ -19,3 +19,5 @@ export const SAVE_SURVEY = "SAVE_SURVEY";
 export const CREATE_SURVEY = "CREATE_SURVEY";
 export const GET_ALL_SURVEYS = "GET_ALL_SURVEYS";
 export const RESET_SURVEY = "RESET_SURVEY";
+export const CREATE_ORG_USER = "CREATE_ORG_USER";
+export const GET_ORG_USERS = "GET_ORG_USERS";
