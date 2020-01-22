@@ -5,3 +5,4 @@ export const ORGANISATIONS = "/app/organisations";
 export const PROFILE = "/app/profile";
 export const CREATENEWPROJECT = "/app/createnewproject";
 export const EDITPROJECT = "/app/editproject";
+export const USERS = "/app/users";

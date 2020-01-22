@@ -9,14 +9,16 @@ import {
   GET_ALL_SURVEYS,
   RESET_SURVEY,
   GET_SINSLE_SURVEY,
-  SET_ERRORS
+  SET_ERRORS,
+  CREATE_ORG_USER,
+  GET_ORG_USERS
 } from "../types";
 
 const initialState = {
   organisations: [],
   organisation: {
-    groups: [],
-    users: []
+    groups: []
+    // users: []
   },
   surveys: [],
   surveyData: {
@@ -85,6 +87,7 @@ export default (state = initialState, action) => {
         ...state,
         surveys: action.payload
       };
+
     case GET_GROUPS: {
       return {
         ...state,
@@ -104,12 +107,32 @@ export default (state = initialState, action) => {
       };
     }
 
+    case CREATE_ORG_USER: {
+      const newUser = [...state.organisation.users, action.payload];
+      return {
+        ...state,
+        organisation: {
+          ...state.organisation,
+          users: newUser
+        }
+      };
+    }
+
     case GET_SINSLE_SURVEY: {
       return {
         ...state,
         editSurveyData: {
           ...state.editSurveyData,
           ...action.payload
+        }
+      };
+    }
+    case GET_ORG_USERS: {
+      return {
+        ...state,
+        organisation: {
+          ...state.organisation,
+          users: action.payload
         }
       };
     }

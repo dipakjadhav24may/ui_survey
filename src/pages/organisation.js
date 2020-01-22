@@ -29,10 +29,7 @@ class Organisation extends Component {
 
   render() {
     const { organisations } = this.state;
-    const {
-      ui: { loading }
-    } = this.props;
-
+   
     return (
       <Layout showHF={true}>
         <div className="container mt-5 px-0">

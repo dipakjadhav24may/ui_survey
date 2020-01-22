@@ -11,7 +11,9 @@ import {
   GET_ALL_SURVEYS,
   RESET_SURVEY,
   GET_SINSLE_SURVEY,
-  GET_SINSLE_GROUP
+  GET_SINSLE_GROUP,
+  CREATE_ORG_USER,
+  GET_ORG_USERS
 } from "../types";
 import axios from "axios";
 import { BASE_URL } from "../../utils/config";
@@ -296,4 +298,54 @@ export const getSingleGroupAction = (groupId, token) => dispatch => {
 
 export const saveSurveyDataToStoreAction = surveyData => dispatch => {
   dispatch({ type: SAVE_SURVEY, payload: surveyData });
+};
+
+export const createOrgUserAction = (data, userToken) => dispatch => {
+  //Code for Api call here
+  axios.defaults.headers.common["Authorization"] = userToken;
+  dispatch({ type: LOADING_UI });
+
+  axios
+    .post(BASE_URL + "organization/user", data)
+    .then(response => {
+      dispatch({
+        type: CLEAR_ERRORS
+      });
+      dispatch({
+        type: CREATE_ORG_USER,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      dispatch({
+        type: SET_ERRORS,
+        payload: error.response ? error.response.data : null
+      });
+    });
+};
+
+export const getOrgUserAction = (orgId, groupId, token) => dispatch => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = token;
+  }
+  dispatch({ type: LOADING_UI });
+  axios
+    .get(`${BASE_URL}organization/orgusers/${orgId}/${groupId}`)
+    .then(response => {
+      console.log("TCL: response", response);
+      dispatch({
+        type: CLEAR_ERRORS
+      });
+      dispatch({
+        type: GET_ORG_USERS,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      console.log("TCL: error", error.response);
+      dispatch({
+        type: SET_ERRORS,
+        payload: error.response ? error.response.data : null
+      });
+    });
 };
