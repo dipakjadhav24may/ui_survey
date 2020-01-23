@@ -1,86 +1,68 @@
 import React, { Component } from "react";
-import { getOrgUserAction } from "../redux/actions/dataActions";
+import { getOrgUserAssessmentsAction } from "../redux/actions/dataActions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import axios from "axios";
 import Layout from "../components/common/layout";
 import { BASE_URL } from "../utils/config";
+import AssessmentTable from "../components/assessments/assessmentTable";
 
 class Assessments extends Component {
   state = {
     assessments: [],
-    user: {},
-    organisation: {},
-    group: {}
+    user: {}
   };
 
   componentDidMount() {
     const {
       user: { token },
       match: {
-        params: { userId, orgId, groupId }
+        params: { userId }
       }
     } = this.props;
-    // this.props.getOrgUserAction(orgId, groupId, token);
+
     axios.defaults.headers.common["Authorization"] = token;
     axios
-      .all([
-        this.getUserAccount(userId),
-        this.getOrganisation(orgId),
-        this.getGroup(groupId)
-      ])
-      .then(
-        axios.spread((user_response, org_response, group_response) => {
-          this.setState({
-            user: user_response.data,
-            organisation: org_response.data,
-            group: group_response.data
-          });
-        })
-      )
+      .get(`${BASE_URL}organization/users/${userId}`)
+      .then(user_response => {
+        this.setState({
+          user: user_response.data
+        });
+      })
       .catch(error => {
         console.log(error);
       });
+    this.props.getOrgUserAssessmentsAction(userId, token);
   }
 
-  getUserAccount = userId => {
-    return axios.get(`${BASE_URL}organization/users/${userId}`);
-  };
-
-  getOrganisation = orgId => {
-    return axios.get(`${BASE_URL}organization/org/${orgId}`);
-  };
-
-  getGroup = groupId => {
-    return axios.get(`${BASE_URL}organization/group/${groupId}`);
-  };
-
-  //   UNSAFE_componentWillReceiveProps(nextProps, nextState) {
-  //     if (nextProps.data.organisation !== this.props.data.organisation) {
-  //       this.setState({ users: nextProps.data.organisation.users });
-  //     }
-  //   }
+  UNSAFE_componentWillReceiveProps(nextProps, nextState) {
+    if (nextProps.data.organisation !== this.props.data.organisation) {
+      this.setState({ assessments: nextProps.data.organisation.assessments });
+    }
+  }
 
   render() {
-    const { user, organisation, group } = this.state;
-    console.log("TCL: Assessments -> render -> group", group);
-    console.log("TCL: Assessments -> render -> organisation", organisation);
-    console.log("TCL: Assessments -> render -> user", user);
-    const {
-      match: {
-        params: { orgId, groupId }
-      }
-    } = this.props;
+    const { user, assessments } = this.state;
+
+    const { history } = this.props;
 
     return (
       <Layout showHF={true}>
         <div className="container mt-5 px-0">
+          <div
+            className="btn btn-secondary"
+            onClick={() => {
+              history.goBack();
+            }}
+          >
+            Go Back
+          </div>
           <div className="row">
-            <div className="col-sm-8 mb-5">
+            <div className="col-sm-12  mb-5">
               <h2 className="text-center mb-4">
                 {user.firstName && user.firstName + "'s"} Assessments
               </h2>
-              {/* <UserTable users={users} orgId={orgId} groupId={groupId} /> */}
+              <AssessmentTable assessments={assessments} />
             </div>
           </div>
         </div>
@@ -96,6 +78,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ getOrgUserAction }, dispatch);
+  bindActionCreators({ getOrgUserAssessmentsAction }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Assessments);

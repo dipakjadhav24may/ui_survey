@@ -11,24 +11,22 @@ import {
   GET_SINSLE_SURVEY,
   SET_ERRORS,
   CREATE_ORG_USER,
-  GET_ORG_USERS
+  GET_ORG_USERS,
+  GET_ORG_USER_ASSESSMENTS
 } from "../types";
 
 const initialState = {
   organisations: [],
   organisation: {
     groups: [],
-    users: []
+    users: [],
+    assessments: []
   },
   surveys: [],
   surveyData: {
-    selectedOrganisation: {},
-    selectedGroup: {},
     surveyName: ""
   },
   editSurveyData: {
-    selectedOrganisation: {},
-    selectedGroup: {},
     surveyName: ""
   }
 };
@@ -136,6 +134,15 @@ export default (state = initialState, action) => {
         }
       };
     }
+
+    case GET_ORG_USER_ASSESSMENTS:
+      return {
+        ...state,
+        organisation: {
+          ...state.organisation,
+          assessments: action.payload
+        }
+      };
     default:
       return state;
   }

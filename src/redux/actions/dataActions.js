@@ -13,7 +13,8 @@ import {
   GET_SINSLE_SURVEY,
   GET_SINSLE_GROUP,
   CREATE_ORG_USER,
-  GET_ORG_USERS
+  GET_ORG_USERS,
+  GET_ORG_USER_ASSESSMENTS
 } from "../types";
 import axios from "axios";
 import { BASE_URL } from "../../utils/config";
@@ -95,7 +96,6 @@ export const createGroupAction = (data, userToken) => dispatch => {
   axios
     .post(BASE_URL + "organization/group", data)
     .then(response => {
-      console.log("TCL: response", response);
       dispatch({
         type: CLEAR_ERRORS
       });
@@ -145,7 +145,6 @@ export const createSurveyAction = (data, token, history) => dispatch => {
   axios
     .post(`${BASE_URL}organization/survey`, data)
     .then(response => {
-      console.log("TCL: response", response);
       dispatch({
         type: CLEAR_ERRORS
       });
@@ -220,50 +219,18 @@ export const getSingleSurveyAction = (surveyId, token) => dispatch => {
   axios
     .get(`${BASE_URL}organization/survey/${surveyId}`)
     .then(response_survey => {
-      console.log(response_survey.data);
-
       getSurvey(response_survey.data.firebaseSurveyId).then(snapshot => {
         if (snapshot.exists) {
-          console.log("TCL: snapshot", snapshot.key, snapshot.val());
-          axios
-            .get(
-              `${BASE_URL}organization/org/${snapshot.val().organisation_id}`
-            )
-            .then(response_org => {
-              let selectedOrganisation = response_org.data;
-              axios
-                .get(`${BASE_URL}organization/group/${snapshot.val().group_id}`)
-                .then(response_group => {
-                  let selectedGroup = response_group.data;
-                  let surveyData = {
-                    surveyName: snapshot.val().title,
-                    selectedOrganisation,
-                    selectedGroup,
-                    surveyId: response_survey.data.surveyId,
-                    surveyFirebaseId: snapshot.key,
-                    surveyText: snapshot.val()
-                  };
-                  console.log("TCL: surveyData", surveyData);
-                  dispatch({
-                    type: GET_SINSLE_SURVEY,
-                    payload: surveyData
-                  });
-                })
-                .catch(error => {
-                  console.log("TCL: error getGroup", error.response);
-                  dispatch({
-                    type: SET_ERRORS,
-                    payload: error.response ? error.response.data : null
-                  });
-                });
-            })
-            .catch(error => {
-              console.log("TCL: error getSurvey", error.response);
-              dispatch({
-                type: SET_ERRORS,
-                payload: error.response ? error.response.data : null
-              });
-            });
+          let surveyData = {
+            surveyName: snapshot.val().title,
+            surveyId: response_survey.data.surveyId,
+            surveyFirebaseId: snapshot.key,
+            surveyText: snapshot.val()
+          };
+          dispatch({
+            type: GET_SINSLE_SURVEY,
+            payload: surveyData
+          });
         }
       });
     })
@@ -283,7 +250,6 @@ export const getSingleGroupAction = (groupId, token) => dispatch => {
   axios
     .get(`${BASE_URL}organization/group/${groupId}`)
     .then(response => {
-      console.log("TCL: response", response.data);
       dispatch({
         type: CLEAR_ERRORS
       });
@@ -337,7 +303,6 @@ export const getOrgUserAction = (orgId, groupId, token) => dispatch => {
   axios
     .get(`${BASE_URL}organization/orgusers/${orgId}/${groupId}`)
     .then(response => {
-      console.log("TCL: response", response);
       dispatch({
         type: CLEAR_ERRORS
       });
@@ -350,6 +315,31 @@ export const getOrgUserAction = (orgId, groupId, token) => dispatch => {
       dispatch({
         type: SET_ERRORS,
         data: { users: [] },
+        payload: error.response ? error.response.data : null
+      });
+    });
+};
+
+export const getOrgUserAssessmentsAction = (userId, token) => dispatch => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = token;
+  }
+  dispatch({ type: LOADING_UI });
+  axios
+    .get(`${BASE_URL}organization/assessment/user/${userId}`)
+    .then(response => {
+      dispatch({
+        type: CLEAR_ERRORS
+      });
+      dispatch({
+        type: GET_ORG_USER_ASSESSMENTS,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      dispatch({
+        type: SET_ERRORS,
+        data: { assessments: [] },
         payload: error.response ? error.response.data : null
       });
     });

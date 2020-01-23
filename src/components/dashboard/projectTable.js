@@ -1,35 +1,30 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as ROUTES from "../../utils/routes";
 
-const SurveyTable = ({ surveys, data: { organisations }, history }) => {
+const SurveyTable = ({ surveys, history }) => {
   return (
     <table className="table table-striped border-bottom border-right border-left">
       <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col">Survey Name</th>
-          <th scope="col">Organisation Name</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
         {surveys &&
           surveys.map((survey, index) => {
-            let organisation = organisations.filter(org => {
-              return org.orgId === survey.orgId;
-            })[0];
-            // console.log("TCL: organisation", organisation);
             return (
-              <tr
-                key={survey.surveyId}
-                onClick={() => {
-                  history.push(`${ROUTES.EDITPROJECT}/${survey.surveyId}`);
-                }}
-              >
+              <tr key={survey.surveyId}>
                 <th scope="row">{index + 1}</th>
                 <td>{survey.surveyName}</td>
-                <td>{organisation && organisation.orgName}</td>
+                <td>
+                  <Link to={`${ROUTES.EDITPROJECT}/${survey.surveyId}`}>
+                    Edit
+                  </Link>
+                </td>
               </tr>
             );
           })}

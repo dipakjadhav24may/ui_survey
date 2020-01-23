@@ -14,7 +14,6 @@ export const loginUserAction = (userData, history) => dispatch => {
   axios
     .post(BASE_URL + "token/generate-token", userData)
     .then(response => {
-      console.log("TCL: response", response);
       dispatch({
         type: CLEAR_ERRORS
       });
@@ -28,7 +27,7 @@ export const loginUserAction = (userData, history) => dispatch => {
       console.log("TCL: error", error.response);
       dispatch({
         type: SET_ERRORS,
-        payload: error.response.data
+        payload: error.response ? error.response.data : null
       });
     });
 };

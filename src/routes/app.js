@@ -44,7 +44,7 @@ const App = ({ match, history }) => {
           render={props => <User {...props} />}
         />
         <Route
-          path={`${match.url}/assessments/:userId/:orgId/:groupId`}
+          path={`${match.url}/assessments/:userId`}
           render={props => <Assessments {...props} />}
         />
 

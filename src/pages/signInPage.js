@@ -3,11 +3,10 @@ import { loginUserAction } from "../redux/actions/userActions";
 import { Link } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as CONSTANTS from "../utils/constants";
 
 const INITIAL_STATE = {
-  username: CONSTANTS.username,
-  password: CONSTANTS.password,
+  username: "",
+  password: "",
   errors: null
 };
 
@@ -49,13 +48,11 @@ class SignInPage extends Component {
   };
 
   render() {
-    const {
-      ui: { loading }
-    } = this.props;
-    console.log("TCL: SignInPage -> render -> loading", loading);
+    // const {
+    //   ui: { loading }
+    // } = this.props;
 
-    const { username, password, errors } = this.state;
-    console.log("TCL: SignInPage -> render -> errors", errors);
+    const { username, password } = this.state;
 
     const isInvalid = password === "" || username === "";
     return (
