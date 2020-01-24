@@ -3,6 +3,7 @@ import { loginUserAction } from "../redux/actions/userActions";
 import { Link } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import Layout from "../components/common/layout";
 
 const INITIAL_STATE = {
   username: "",
@@ -56,42 +57,49 @@ class SignInPage extends Component {
 
     const isInvalid = password === "" || username === "";
     return (
-      <div className="text-center c-signinContainer">
-        <h1>SignIn</h1>
-        <div className="form-group">
-          <input
-            className="form-control"
-            name="username"
-            value={username}
-            onChange={this.onChange}
-            type="text"
-            placeholder="Email Address"
-          />
-        </div>
-        <div className="form-group">
-          <input
-            className="form-control"
-            name="password"
-            value={password}
-            onChange={this.onChange}
-            type="password"
-            placeholder="Password"
-          />
-        </div>
-        {/* {error && <p className="text-danger">{error.message}</p>} */}
-        <button
-          disabled={isInvalid}
-          className="btn btn-success mt-3"
-          type="submit"
-          onClick={this.onSubmit}
-        >
-          Sign In
-        </button>
+      <Layout>
+        <div className="text-center c-signinContainer">
+          <h1>Sign In</h1>
+          <div className="form-group">
+            <input
+              className="form-control"
+              name="username"
+              value={username}
+              onChange={this.onChange}
+              type="text"
+              placeholder="Email Address"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              className="form-control"
+              name="password"
+              value={password}
+              onChange={this.onChange}
+              type="password"
+              placeholder="Password"
+            />
+          </div>
+          {/* {error && <p className="text-danger">{error.message}</p>} */}
+          <button
+            disabled={isInvalid}
+            className="btn btn-success mt-3"
+            type="submit"
+            onClick={this.onSubmit}
+          >
+            Sign In
+          </button>
 
-        <p className="mt-5">
-          Don't have an account? <Link to={"/signup"}>Sign Up</Link>
-        </p>
-      </div>
+          <p className="mt-5">
+            Don't have an account?{" "}
+            <Link className="custom-link" to={"/signup"}>
+              Sign up
+            </Link>
+            <br></br>
+            <small>&copy; 2020 Radioactive</small>
+          </p>
+        </div>
+      </Layout>
     );
   }
 }

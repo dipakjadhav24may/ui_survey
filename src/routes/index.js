@@ -27,14 +27,16 @@ const Routes = ({ token }) => {
     store.store.dispatch({ type: SET_UNAUTHENTICATED });
   }
   return (
-    <Router>
-      <Switch>
-        <UnProtectedRoute exact path="/" component={SignInPage} />
-        <UnProtectedRoute path="/signup" component={SignUpPage} />
-        <ProtectedRoute path="/app" component={App} />
-        <UnProtectedRoute component={NotFound} />
-      </Switch>
-    </Router>
+    <div>
+      <Router>
+        <Switch>
+          <UnProtectedRoute exact path="/" component={SignInPage} />
+          <UnProtectedRoute path="/signup" component={SignUpPage} />
+          <ProtectedRoute path="/app" component={App} />
+          <UnProtectedRoute component={NotFound} />
+        </Switch>
+      </Router>
+    </div>
   );
 };
 

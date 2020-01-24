@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import { getSurveysAction } from "../redux/actions/dataActions";
 
 const Profilepage = ({ user: { user, token } }) => {
-  console.log("TCL: Profilepage -> user", user);
   return (
     <Layout showHF={true}>
       <div className="container">

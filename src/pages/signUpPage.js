@@ -7,6 +7,7 @@ import * as ROUTES from "../utils/routes";
 import { isEmail, isEmpty } from "../utils/helpermethods";
 import axios from "axios";
 import { BASE_URL } from "../utils/config";
+import Layout from "../components/common/layout";
 
 const INITIAL_STATE = {
   userName: "",
@@ -108,148 +109,155 @@ class SignUpPage extends Component {
       isEmpty(orgName);
 
     return (
-      <div className=" c-signinContainer">
-        <h1 className="text-center">Sign up</h1>
-        <div className="row">
-          <div className="col-md-6 col-xs-12">
-            <div className="form-group">
-              <label>First Name:</label>
-              <input
-                className={`form-control ${
-                  errors && errors.firstName ? "is-invalid" : ""
-                }`}
-                name="firstName"
-                value={firstName}
-                onChange={this.onChange}
-                type="text"
-              />
-              <div className="invalid-feedback">
-                {errors && "First name " + errors.firstName}
+      <Layout>
+        <div className=" c-signupContainer">
+          <h1 className="text-center">Sign Up</h1>
+          <div className="row">
+            <div className="col-md-6 col-xs-12">
+              <div className="form-group">
+                <label>First Name:</label>
+                <input
+                  className={`form-control ${
+                    errors && errors.firstName ? "is-invalid" : ""
+                  }`}
+                  name="firstName"
+                  value={firstName}
+                  onChange={this.onChange}
+                  type="text"
+                />
+                <div className="invalid-feedback">
+                  {errors && "First name " + errors.firstName}
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-xs-12">
+              <div className="form-group">
+                <label>Last Name:</label>
+                <input
+                  className={`form-control ${
+                    errors && errors.lastName ? "is-invalid" : ""
+                  }`}
+                  name="lastName"
+                  value={lastName}
+                  onChange={this.onChange}
+                  type="text"
+                />
+                <div className="invalid-feedback">
+                  {errors && "Last name " + errors.lastName}
+                </div>
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-xs-12">
-            <div className="form-group">
-              <label>Last Name:</label>
-              <input
-                className={`form-control ${
-                  errors && errors.lastName ? "is-invalid" : ""
-                }`}
-                name="lastName"
-                value={lastName}
-                onChange={this.onChange}
-                type="text"
-              />
-              <div className="invalid-feedback">
-                {errors && "Last name " + errors.lastName}
+          <div className="row">
+            <div className="col-md-12 col-xs-12">
+              <div className="form-group">
+                <label>Email:</label>
+                <input
+                  className={`form-control ${
+                    errors && errors.email ? "is-invalid" : ""
+                  }`}
+                  name="email"
+                  value={email}
+                  onChange={this.onChange}
+                  type="text"
+                />
+                <div className="invalid-feedback">{errors && errors.email}</div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-md-12 col-xs-12">
-            <div className="form-group">
-              <label>Email:</label>
-              <input
-                className={`form-control ${
-                  errors && errors.email ? "is-invalid" : ""
-                }`}
-                name="email"
-                value={email}
-                onChange={this.onChange}
-                type="text"
-              />
-              <div className="invalid-feedback">{errors && errors.email}</div>
+          <div className="row">
+            <div className="col-md-6 col-xs-12">
+              <div className="form-group">
+                <label>Username:</label>
+                <input
+                  className={`form-control ${
+                    errors && errors.userName ? "is-invalid" : ""
+                  }`}
+                  name="userName"
+                  value={userName}
+                  onChange={this.onChange}
+                  type="text"
+                />
+                <div className="invalid-feedback">
+                  {errors && "Username " + errors.userName}
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6 col-xs-12">
+              <div className="form-group">
+                <label>Company:</label>
+                <input
+                  className={`form-control ${
+                    errors && errors.orgName ? "is-invalid" : ""
+                  }`}
+                  name="orgName"
+                  value={orgName}
+                  onChange={this.onChange}
+                  type="text"
+                />
+                <div className="invalid-feedback">
+                  {errors && "Company " + errors.orgName}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-md-6 col-xs-12">
-            <div className="form-group">
-              <label>Username:</label>
-              <input
-                className={`form-control ${
-                  errors && errors.userName ? "is-invalid" : ""
-                }`}
-                name="userName"
-                value={userName}
-                onChange={this.onChange}
-                type="text"
-              />
-              <div className="invalid-feedback">
-                {errors && "Username " + errors.userName}
+          <div className="row">
+            <div className="col-md-6 col-xs-12">
+              <div className="form-group">
+                <label>Password:</label>
+                <input
+                  className={`form-control ${
+                    errors && errors.password ? "is-invalid" : ""
+                  }`}
+                  name="password"
+                  value={password}
+                  onChange={this.onChange}
+                  type="password"
+                />
+                <div className="invalid-feedback">
+                  {errors && "Password " + errors.password}
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6 col-xs-12">
+              <div className="form-group">
+                <label>Confirm Password:</label>
+                <input
+                  className={`form-control ${
+                    errors && errors.confirmPassword ? "is-invalid" : ""
+                  }`}
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={this.onChange}
+                  type="password"
+                />
+                <div className="invalid-feedback">
+                  {errors && errors.confirmPassword}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="col-md-6 col-xs-12">
-            <div className="form-group">
-              <label>Company:</label>
-              <input
-                className={`form-control ${
-                  errors && errors.orgName ? "is-invalid" : ""
-                }`}
-                name="orgName"
-                value={orgName}
-                onChange={this.onChange}
-                type="text"
-              />
-              <div className="invalid-feedback">
-                {errors && "Company " + errors.orgName}
-              </div>
-            </div>
-          </div>
+          <button
+            className="btn btn-success"
+            type="submit"
+            disabled={isInvalid}
+            onClick={this.onSubmitHandler.bind(this)}
+          >
+            Sign Up
+          </button>
+          <p className="mt-5 text-center">
+            Already have an account?{" "}
+            <Link className="custom-link" to={"/"}>
+              Sign in
+            </Link>
+            <br></br>
+            <small>&copy; 2020 Radioactive</small>
+          </p>
         </div>
-        <div className="row">
-          <div className="col-md-6 col-xs-12">
-            <div className="form-group">
-              <label>Password:</label>
-              <input
-                className={`form-control ${
-                  errors && errors.password ? "is-invalid" : ""
-                }`}
-                name="password"
-                value={password}
-                onChange={this.onChange}
-                type="password"
-              />
-              <div className="invalid-feedback">
-                {errors && "Password " + errors.password}
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-6 col-xs-12">
-            <div className="form-group">
-              <label>Confirm Password:</label>
-              <input
-                className={`form-control ${
-                  errors && errors.confirmPassword ? "is-invalid" : ""
-                }`}
-                name="confirmPassword"
-                value={confirmPassword}
-                onChange={this.onChange}
-                type="password"
-              />
-              <div className="invalid-feedback">
-                {errors && errors.confirmPassword}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button
-          className="btn btn-success"
-          type="submit"
-          disabled={isInvalid}
-          onClick={this.onSubmitHandler.bind(this)}
-        >
-          Sign Up
-        </button>
-        <p className="mt-5">
-          Already have an account? <Link to={"/"}>Sign In</Link>
-        </p>
-      </div>
+      </Layout>
     );
   }
 }
