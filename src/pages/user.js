@@ -96,7 +96,7 @@ class User extends Component {
 
   sendSurvey = event => {
     let { selectedUsers, selectedSurvey } = this.state;
-
+     const { history } = this.props;
     if (
       selectedUsers.length === 0 ||
       Object.values(selectedSurvey).length === 0
@@ -128,6 +128,7 @@ class User extends Component {
           }
         })
         .catch(error => console.log(error));
+         history.goBack();
     });
   };
 
