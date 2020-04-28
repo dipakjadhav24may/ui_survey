@@ -96,7 +96,7 @@ class SignInPage extends Component {
               Sign up
             </Link>
             <br></br>
-            <small>&copy; 2020 Radioactive</small>
+            <small>&copy; 2020 Radioactive V_25.03.20</small>
           </p>
         </div>
       </Layout>
